@@ -1,6 +1,7 @@
 package com.iftikar.foodie.enities
 
 import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
@@ -14,6 +15,7 @@ import java.util.UUID
 @Table(name = "users")
 class User(
     var name: String,
+    @Column(unique = true)
     var email: String,
     var password: String,
     var address: String,
