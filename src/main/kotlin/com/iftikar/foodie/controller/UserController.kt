@@ -7,23 +7,19 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/v1/users")
-class UserController(private val userService: UserService) {
+class UserController(
+    private val userService: UserService
+) {
 
     @PostMapping
     fun create(
         @RequestBody userDto: UserDto
     ): ResponseEntity<UserDto> {
-       val user = userService.saveUser(userDto)
+        val user = userService.saveUser(userDto)
         return ResponseEntity(user, HttpStatus.CREATED)
     }
 
@@ -46,5 +42,13 @@ class UserController(private val userService: UserService) {
     ): ResponseEntity<UserDto> {
         val user = userService.getById(userId)
         return ResponseEntity.ok(user)
+    }
+
+    @DeleteMapping("/{userId}")
+    fun deleteUser(
+        @PathVariable userId: String
+    ): ResponseEntity<Unit> {
+        userService.deleteUser(userId)
+        return ResponseEntity.ok(Unit)
     }
 }

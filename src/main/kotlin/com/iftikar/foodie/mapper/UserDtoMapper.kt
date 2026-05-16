@@ -11,6 +11,8 @@ fun UserDto.toUser() = User(
     address = address,
     phoneNumber =phoneNumber,
     role = Role.CUSTOMER,
+    restaurants = restaurants.toMutableList(),
+    roleEntities = roleEntities.toMutableList()
 )
 
 fun User.toDto() = UserDto(

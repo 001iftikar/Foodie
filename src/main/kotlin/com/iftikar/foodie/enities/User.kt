@@ -1,15 +1,6 @@
 package com.iftikar.foodie.enities
 
-import jakarta.persistence.CascadeType
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.EnumType
-import jakarta.persistence.Enumerated
-import jakarta.persistence.FetchType
-import jakarta.persistence.Id
-import jakarta.persistence.OneToMany
-import jakarta.persistence.Table
-import java.util.UUID
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "users")
@@ -22,5 +13,15 @@ class User(
     var phoneNumber: String,
     @Enumerated(EnumType.STRING)
     var role: Role,
+    var enabled: Boolean = true,
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var restaurants: MutableList<Restaurant>,
+    @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "user_role",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "role_id")]
+    )
+    var roleEntities: MutableList<RoleEntity>,
     var isAvailable: Boolean = true,
 ) : BaseEntity()

@@ -12,18 +12,25 @@ import java.util.*
 @Service
 class JwtService {
     companion object {
-        private val EXPIRATION_TIME = 15 * 60 * 1000L
-        private val SECRET = "ncsficnfhscdhnfnfncuamfncnashdjadjhanxhanxasdasndhaskdhkasjhda"
+        private const val EXPIRATION_TIME = 15 * 60 * 1000L
+        private const val REFRESH_EXPIRATION_TIME = 24 * 60 * 60 * 1000L
+        private const val SECRET = "ncsficnfhscdhnfnfncuamfncnashdjadjhanxhanxasdasndhaskdhkasjhda"
     }
 
     /**
      * Generate token
      */
-    fun generateToken(username: String): String {
+    fun generateToken(username: String, isAccessToken: Boolean): String {
+        val expTime = if (isAccessToken) EXPIRATION_TIME else REFRESH_EXPIRATION_TIME
+        val tokenType = if (isAccessToken) "Bearer" else "Refresh-token"
+        val claims = mapOf(
+            "type" to tokenType
+        )
         return Jwts.builder()
             .subject(username)
+            .claims(claims)
             .issuedAt(Date())
-            .expiration(Date(System.currentTimeMillis() + EXPIRATION_TIME))
+            .expiration(Date(System.currentTimeMillis() + expTime))
             .signWith(Keys.hmacShaKeyFor(SECRET.toByteArray()), Jwts.SIG.HS256)
             .compact()
     }
@@ -68,4 +75,19 @@ class JwtService {
             .expiration
         return expiration.before(Date(System.currentTimeMillis()))
     }
+
+    fun isRefreshToken(token: String): Boolean {
+        val claims = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(SECRET.toByteArray())).build()
+            .parseSignedClaims(token).payload
+        val type = claims["type"].toString()
+        return type == "Refresh-token"
+    }
+
+    fun isAccessToken(token: String): Boolean {
+        val claims = Jwts.parser().verifyWith(Keys.hmacShaKeyFor(SECRET.toByteArray())).build()
+            .parseSignedClaims(token).payload
+        val type = claims["type"].toString()
+        return type == "Bearer"
+    }
+
 }

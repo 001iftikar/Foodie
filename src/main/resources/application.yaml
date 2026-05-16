@@ -12,7 +12,8 @@ spring:
         format-sql: true
     hibernate:
       ddl-auto: update
-#  security:
-#    user:
-#      name: user
-#      password: user
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG

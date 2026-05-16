@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface UserService {
-    fun saveUser(user: UserDto): UserDto
+    fun saveUser(userDto: UserDto): UserDto
     fun updateUser(user: UserDto, userId: String): UserDto
     fun getUsers(pageable: Pageable): Page<UserDto>
     fun getByUserName(name: String): List<UserDto>
